@@ -1,0 +1,117 @@
+<html>
+
+<head>
+    <style>
+        .radio {
+            color: green
+        }
+
+        section.form-container {
+            background-color: #050a301c;
+            padding: 30px;
+            border-radius: 10px;
+            /* box-shadow: 3px 3px 3px #050a3033; */
+            box-shadow: -7px 8px 12px 0px rgb(0 0 0 / 75%);
+            -webkit-box-shadow: -7px 8px 12px 0px #050a30b8;
+            margin: 20px;
+            -moz-box-shadow: -7px 8px 12px 0px rgba(0, 0, 0, 0.75);
+        }
+
+        .form-button {
+            background-color: #050a30;
+            color: white;
+            transition: .8s all;
+            border-radius: 6px;
+        }
+
+        .form-button.btn:hover {
+            color: rgb(255 255 255 / 75%);
+        }
+
+        .form-control {
+            border-radius: 0;
+            border-width: 0;
+            background-color: transparent;
+            border-bottom-width: 1px;
+            border-bottom-color: #ccc;
+            padding: 0.375rem 0;
+            transition: .8s ease-in-out;
+        }
+
+        .form-control:focus {
+            color: #212529;
+            background-color: transparent;
+            border-color: transparent;
+            outline: 0;
+            box-shadow: none;
+            border-bottom-color: #050a30;
+        }
+
+        .form-group {
+            padding: 10px 0;
+        }
+
+        .success {
+            color: #00a10f;
+        }
+
+        .decline {
+            color: red;
+        }
+    </style>
+    <script>
+        function validateForm() {
+            let x = document.forms["myForm"]["radio"].value;
+            if (x == "") {
+                alert("Please select atleast one option to continue");
+                return false;
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                <section class="form-container">
+                    <h1>Hello {{username}} </h1>
+                    {% if displayQuiz %}
+                    <div>
+                        <form action="/polls/takeTest" name="myForm" onsubmit="return validateForm()" method="post">
+                            {% csrf_token %}
+                            <b> Question : {{question.question}} </b>
+                            {% for options in question.options %}
+                            <p>
+                                <input type="radio" name="radio" id="radio" value="{{ options }}">
+                                {{options}}
+                            </p>
+                            {% endfor %}
+
+                            <input type="hidden" id="username" name="username" value="{{username}}" />
+                            <input type="hidden" id="answer" name="answer" value="{{question.answer}}" />
+                            <input type="hidden" id="count" name="count" value="{{count}}" />
+                            <input type="submit" class="btn btn-block form-button" value="Submit">
+                        </form>
+                    </div>
+                    {% else %}
+                    <div>
+                        <p>Quiz Finished...! <br /> Your score: {{correct_answer}}</p>
+                        <b>{{message}}</b>
+                        <br>
+                        <br>
+                        {% if correct_answer < 3 %}<a href="/polls/quizRedirect"
+                                id="link"><button type="button"
+                                class="btn btn-block form-button">Retake Test</button></a>
+                            {% endif %}
+                            <a href="/polls/logoutRedirect" id="link"><button type="button"
+                                    class="btn btn-block form-button">Logout</button></a>
+                    </div>
+                    {% endif %}
+                </section>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

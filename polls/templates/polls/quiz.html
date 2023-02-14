@@ -1,0 +1,119 @@
+<html>
+
+<head>
+    <style>
+        .radio {
+            color: green
+        }
+
+        section.form-container {
+            background-color: #050a301c;
+            padding: 30px;
+            border-radius: 10px;
+            /* box-shadow: 3px 3px 3px #050a3033; */
+            box-shadow: -7px 8px 12px 0px rgb(0 0 0 / 75%);
+            -webkit-box-shadow: -7px 8px 12px 0px #050a30b8;
+            margin: 20px;
+            -moz-box-shadow: -7px 8px 12px 0px rgba(0, 0, 0, 0.75);
+        }
+
+        .form-button {
+            background-color: #050a30;
+            color: white;
+            transition: .8s all;
+            border-radius: 6px;
+        }
+
+        .form-button.btn:hover {
+            color: rgb(255 255 255 / 75%);
+        }
+
+        .success {
+            color: #00a10f;
+        }
+
+        .decline {
+            color: red;
+        }
+    </style>
+    <script>
+        function validateForm() {
+            let x = document.forms["myForm"]["radio"].value;
+            if (x == "") {
+                alert("Please select a valid option");
+                return false;
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="form-container">
+        <div class="container">
+            <div class="row">
+                <section class="form-container">
+                    <h1>Hello, {{username}} </h1>
+                    {% if take_test %}
+                    <div>
+                        <p>There will be five questions...! Press begin when ready...!</p>
+                        <form action="/polls/takeTest" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" id="username" name="username" value="{{username}}" />
+                            <input type="hidden" id="count" name="count" value="{{count}}" />
+                            <input type="submit" value="Start" class="btn btn-block form-button">
+                        </form>
+                    </div>
+                    {% endif %}
+
+                    {% if view_all_scores %}
+                    <h3>Your all test scores </h3>
+                    {% if test_data|length > 0 %}
+                    {% for score in test_data %}
+                    <p><b>Test {{forloop.counter}}:</b> <i>{{score}}/5</i></p>
+                    {% endfor %}
+                    {% else %}
+                    <p><b>You had not taken any test</b></p>
+                    {% endif %}
+                   <a href="/polls/quizRedirect" id="link"><button type="button"
+                        class="btn btn-block form-button"> Back
+                        </button></a>
+                    {% endif %}
+
+                    {% if view_average %}
+                    <h3> Your test stats </h3>
+                    {% if test_data|length > 0 %}
+                    <p>Minimum score: {{test_data.min}}/5</p>
+                    <p>Maximum score: {{test_data.max}}/5</p>
+                    <p>Average score: {{test_data.avg}}/5</p>
+                    {% else %}
+                    <p><b>You had not taken any test</b></p>
+                    {% endif %}
+                    <a href="/polls/quizRedirect" id="link"><button type="button"
+                        class="btn btn-block form-button"> Back
+                        </button></a>
+                    {% endif %}
+
+                    {% if show_menu %}
+                    <div>
+                        <form action="/polls/userMenu" name="myForm" onsubmit="return validateForm()" method="post">
+                            {% csrf_token %}
+                            <h2>Please select one option</h2>
+                            <h3><input type="radio" name="radio" id="radio0" value="0"> Take Test</h3>
+                            <h3><input type="radio" name="radio" id="radio1" value="1"> View All Score</h3>
+                            <h3><input type="radio" name="radio" id="radio2" value="2"> View Stats(Average)</h3>
+                            <input type="submit" class="btn btn-block form-button" value="Next">
+                        </form>
+                    </div>
+                    {% endif %}
+                    <div class="box">
+                        <a href="/polls/logoutRedirect" id="link"><button type="button"
+                            class="btn btn-block form-button"> Logout
+                            </button></a>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
